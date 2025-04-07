@@ -1,0 +1,157 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: AddToFront
+      id: addtofront
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: AddToFront
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Add to front and iterate"
+        timeout: 10
+        max-score: 8
+    - name: AddToBack
+      id: addtoback
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: AddToBack
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Add to back and iterate"
+        timeout: 10
+        max-score: 8
+    - name: PointerIntegrityFront
+      id: pointerintegrityfront
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: PointerIntegrityFront
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="XOR pointer integrity for add_to_front"
+        timeout: 10
+        max-score: 10
+    - name: PointerIntegrityBack
+      id: pointerintegrityback
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: PointerIntegrityBack
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="XOR pointer integrity for add_to_back"
+        timeout: 10
+        max-score: 10
+    - name: RemoveFromFront
+      id: removefromfront
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: RemoveFromFront
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Remove from front operations"
+        timeout: 10
+        max-score: 8
+    - name: RemoveFromBack
+      id: removefromback
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: RemoveFromBack
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Remove from back operations"
+        timeout: 10
+        max-score: 8
+    - name: Iterator
+      id: iterator
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Iterator
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Iterate using the Iterator class"
+        timeout: 10
+        max-score: 8
+    - name: CopyConstructor
+      id: copyconstructor
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: CopyConstructor
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Copy constructor creates an independent
+          deep copy"
+        timeout: 10
+        max-score: 8
+    - name: CopyAssignment
+      id: copyassignment
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: CopyAssignment
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Copy assignment correctly copies and clears
+          existing list"
+        timeout: 10
+        max-score: 8
+    - name: MoveConstructor
+      id: moveconstructor
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: MoveConstructor
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Move constructor transfers ownership and
+          clears source"
+        timeout: 10
+        max-score: 8
+    - name: MoveAssignment
+      id: moveassignment
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: MoveAssignment
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Move assignment transfers ownership and
+          clears source"
+        timeout: 10
+        max-score: 8
+    - name: InitializerList
+      id: initializerlist
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: InitializerList
+        setup-command: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -B build && cmake
+          --build build
+        command: ./build/Test --test-case="Initializer list constructor correctly
+          initializes list"
+        timeout: 10
+        max-score: 8
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        ADDTOFRONT_RESULTS: "${{steps.addtofront.outputs.result}}"
+        ADDTOBACK_RESULTS: "${{steps.addtoback.outputs.result}}"
+        POINTERINTEGRITYFRONT_RESULTS: "${{steps.pointerintegrityfront.outputs.result}}"
+        POINTERINTEGRITYBACK_RESULTS: "${{steps.pointerintegrityback.outputs.result}}"
+        REMOVEFROMFRONT_RESULTS: "${{steps.removefromfront.outputs.result}}"
+        REMOVEFROMBACK_RESULTS: "${{steps.removefromback.outputs.result}}"
+        ITERATOR_RESULTS: "${{steps.iterator.outputs.result}}"
+        COPYCONSTRUCTOR_RESULTS: "${{steps.copyconstructor.outputs.result}}"
+        COPYASSIGNMENT_RESULTS: "${{steps.copyassignment.outputs.result}}"
+        MOVECONSTRUCTOR_RESULTS: "${{steps.moveconstructor.outputs.result}}"
+        MOVEASSIGNMENT_RESULTS: "${{steps.moveassignment.outputs.result}}"
+        INITIALIZERLIST_RESULTS: "${{steps.initializerlist.outputs.result}}"
+      with:
+        runners: addtofront,addtoback,pointerintegrityfront,pointerintegrityback,removefromfront,removefromback,iterator,copyconstructor,copyassignment,moveconstructor,moveassignment,initializerlist
